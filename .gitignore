@@ -14,3 +14,9 @@ env/
 
 # Mac system files
 .DS_Store
+
+# Ignore large terraform binaries
+terraform/
+*.zip
+*.x5
+*.tar.gz
