@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Item</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+  <div class="container">
+    <h1>Edit Item</h1>
+    <form method="POST">
+      <input type="text" name="name" value="{{ item.name }}" required>
+      <input type="number" name="quantity" value="{{ item.quantity }}" required>
+      <input type="text" name="location" value="{{ item.location }}" required>
+      <button type="submit">Update</button>
+    </form>
+    <a href="/">← Back</a>
+  </div>
+</body>
+</html>
