@@ -1,12 +1,12 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from dotenv import load_dotenv
-import os
+from app.routes import main
+from app.models import db
 
-load_dotenv()  # Load environment variables from .env file
+def create_app():
+    app = Flask(__name__)
+    app.config.from_pyfile('config.py')
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///inventory.db'
+    db.init_app(app)
+    app.register_blueprint(main)
 
-db = SQLAlchemy(app)
+    return app

@@ -1,64 +1,58 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from .models import InventoryItem
-from . import db
+from flask import Blueprint, render_template, request, redirect, url_for
+from .models import db, InventoryItem
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    search_query = request.args.get('q')
-    if search_query:
+    query = request.args.get('query', '').strip()
+
+    if query:
         items = InventoryItem.query.filter(
-            InventoryItem.name.ilike(f'%{search_query}%') |
-            InventoryItem.location.ilike(f'%{search_query}%')
-        ).all()
+            (InventoryItem.t2t_code.ilike(f"%{query}%")) |
+            (InventoryItem.branch_code.ilike(f"%{query}%"))
+        ).order_by(InventoryItem.id.desc()).all()
     else:
-        items = InventoryItem.query.all()
+        items = InventoryItem.query.order_by(InventoryItem.id.desc()).all()
+
     return render_template('index.html', items=items)
 
-@main.route('/add', methods=['POST'])
+
+
+@main.route('/add', methods=['GET', 'POST'])
 def add_item():
-    name = request.form['name'].strip()
-    quantity = request.form['quantity']
-    location = request.form['location'].strip()
+    if request.method == 'POST':
+        t2t_code = request.form.get('t2t_code')
+        branch_code = request.form.get('branch_code')
+        quantity = request.form.get('quantity')
 
-    if not name or not quantity or not location:
-        flash('All fields are required.', 'error')
-        return redirect('/')
-
-    item = InventoryItem(name=name, quantity=quantity, location=location)
-    db.session.add(item)
-    db.session.commit()
-    flash('Item added successfully!', 'success')
-    return redirect('/')
-
-
-@main.route('/delete/<int:item_id>', methods=['POST'])
-def delete_item(item_id):
-    item = InventoryItem.query.get_or_404(item_id)
-    db.session.delete(item)
-    db.session.commit()
-    flash('Item deleted successfully.', 'success')
-    return redirect('/')
-
+        if t2t_code and branch_code and quantity:
+            new_item = InventoryItem(
+                t2t_code=t2t_code.strip(),
+                branch_code=branch_code.strip(),
+                quantity=int(quantity)
+            )
+            db.session.add(new_item)
+            db.session.commit()
+            return redirect(url_for('main.index'))
+    return render_template('add.html')
 
 @main.route('/edit/<int:item_id>', methods=['GET', 'POST'])
 def edit_item(item_id):
     item = InventoryItem.query.get_or_404(item_id)
 
     if request.method == 'POST':
-        item.name = request.form['name'].strip()
-        item.quantity = request.form['quantity']
-        item.location = request.form['location'].strip()
-
-        if not item.name or not item.quantity or not item.location:
-            flash('All fields are required.', 'error')
-            return redirect(f'/edit/{item_id}')
-
+        item.t2t_code = request.form.get('t2t_code')
+        item.branch_code = request.form.get('branch_code')
+        item.quantity = int(request.form.get('quantity'))
         db.session.commit()
-        flash('Item updated successfully!', 'success')
-        return redirect('/')
+        return redirect(url_for('main.index'))
 
     return render_template('edit.html', item=item)
 
-
+@main.route('/delete/<int:item_id>', methods=['POST'])
+def delete_item(item_id):
+    item = InventoryItem.query.get_or_404(item_id)
+    db.session.delete(item)
+    db.session.commit()
+    return redirect(url_for('main.index'))

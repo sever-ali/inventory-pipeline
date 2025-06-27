@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Inventory Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Add Inventory Item</h1>
+        <form method="POST" action="{{ url_for('main.add_item') }}">
+            <label for="t2t_code">T2T Code</label>
+            <input type="text" name="t2t_code" required>
+
+            <label for="branch_code">Branch Code</label>
+            <input type="text" name="branch_code" required>
+
+            <label for="quantity">Quantity</label>
+            <input type="number" name="quantity" required>
+
+            <button type="submit">Add Item</button>
+        </form>
+
+    </div>
+</body>
+</html>
