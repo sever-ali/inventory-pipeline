@@ -2,16 +2,16 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f8;
     margin: 0;
-    padding: 20px;
+    padding: 0;
 }
 
 .container {
     max-width: 800px;
-    margin: auto;
+    margin: 40px auto;
+    padding: 20px;
     background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -19,59 +19,85 @@ h1 {
     color: #333;
 }
 
-form {
-    margin-bottom: 2rem;
-}
-
-input[type="text"],
-input[type="number"] {
+table {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
-button {
-    padding: 10px 15px;
-    background-color: #007bff;
+thead {
+    background-color: #1976d2;
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
-button:hover {
-    background-color: #0056b3;
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-.item {
-    background: #fff;
-    border: 1px solid #eee;
-    padding: 1rem;
-    border-radius: 5px;
-    margin-bottom: 10px;
+tbody tr:hover {
+    background-color: #f1f1f1;
 }
 
-.flashes {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 1rem;
+.btn, .btn-sm {
+    text-decoration: none;
+    padding: 8px 12px;
+    margin: 4px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-block;
+    transition: background-color 0.3s ease;
 }
 
-.flashes li {
-    padding: 10px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    font-weight: bold;
+.btn {
+    background-color: #1976d2;
+    color: white;
 }
 
-.success {
-    background-color: #d4edda;
-    color: #155724;
+.btn:hover {
+    background-color: #1565c0;
 }
 
-.error {
-    background-color: #f8d7da;
-    color: #721c24;
+.btn-sm {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.btn-sm:hover {
+    background-color: #d5d5d5;
+}
+
+.btn-sm.delete {
+    background-color: #e57373;
+    color: white;
+}
+
+.btn-sm.delete:hover {
+    background-color: #d32f2f;
+}
+
+.search-form {
+  margin-bottom: 20px;
+}
+
+.search-form input[type="text"] {
+  padding: 6px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-form button {
+  padding: 6px 12px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-form button:hover {
+  background-color: #0056b3;
 }

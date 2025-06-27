@@ -1,10 +1,12 @@
-from . import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 class InventoryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    t2t_code = db.Column(db.String(20), nullable=False)
+    branch_code = db.Column(db.String(10), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    location = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
-        return f"<Item {self.name} ({self.quantity}) at {self.location}>"
+        return f'<InventoryItem {self.t2t_code}>'
