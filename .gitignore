@@ -1,6 +1,11 @@
 # Ignore Python bytecode
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+venv/
+.env
 
 # Virtual environment
 venv/
@@ -20,3 +25,7 @@ terraform/
 *.zip
 *.x5
 *.tar.gz
+
+# Docker
+*.log
+*.pid
