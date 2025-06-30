@@ -1,0 +1,43 @@
+- name: Deploy Flask Inventory App with Docker
+  hosts: flask
+  become: yes
+
+  tasks:
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+
+    - name: Install required system packages
+      apt:
+        name: ['docker.io', 'git']
+        state: present
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Clone Flask app repo
+      git:
+        repo: 'https://github.com/sever-ali/inventory-pipeline.git'
+        dest: /home/ubuntu/app
+        version: main
+
+    - name: Build Docker image
+      community.docker.docker_image:
+        name: flask-inventory-app
+        source: build
+        build:
+          path: /home/ubuntu/app
+        state: present
+      become: true
+
+    - name: Run Docker container
+      community.docker.docker_container:
+        name: flask_inventory
+        image: flask-inventory-app
+        state: started
+        restart_policy: always
+        published_ports:
+          - "5000:5000"
