@@ -41,3 +41,14 @@
         restart_policy: always
         published_ports:
           - "5000:5000"
+
+    - name: Install Docker Compose Plugin
+      apt:
+        name: docker-compose-plugin
+        state: present
+
+
+    - name: Deploy Prometheus + Grafana
+      community.docker.docker_compose:
+        project_src: /home/ubuntu/app/monitoring
+      become: yes
