@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Run the app
-CMD ["python", "run.py"]
+CMD ["python", "inventory_app/run.py"]
