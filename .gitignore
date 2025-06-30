@@ -21,7 +21,9 @@ env/
 .DS_Store
 
 # Ignore large terraform binaries
-terraform/
+.terraform/
+*.tfstate
+*.tfstate.backup
 *.zip
 *.x5
 *.tar.gz
