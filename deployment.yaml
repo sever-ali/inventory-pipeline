@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-inventory-app
+  labels:
+    app: flask-inventory-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-inventory-app
+  template:
+    metadata:
+      labels:
+        app: flask-inventory-app
+    spec:
+      containers:
+      - name: flask-inventory-container
+        image: 384139471302.dkr.ecr.eu-west-2.amazonaws.com/flask-inventory-app:latest
+        ports:
+        - containerPort: 5000
