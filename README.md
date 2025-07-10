@@ -1,108 +1,94 @@
+# 📦 Inventory App — README
 
-# 📦 Flask Inventory App on EKS
+## 📌 Project Overview
 
-This project deploys a simple Flask app to an AWS EKS cluster using Terraform and Docker.
-It’s set up for learning and testing — pull it, tweak it, break it, fix it!
+A simple MVP Flask-based inventory management concept for stores to track stock, warehousing, and supply chain movements more easily.  
+This project demonstrates practical use of Infrastructure as Code (IaC) with Terraform, configuration management with Ansible, containerisation with Docker, and monitoring with Prometheus + Grafana — all deployed to AWS EKS with GitHub Actions CI/CD.
 
-## 🚀 Tech Stack
+---
 
-- **Flask** — Python web app
-- **Docker** — Containerised app image
-- **AWS ECR** — Stores the Docker image
-- **Terraform** — Manages EKS cluster and node groups
-- **Kubernetes** — Deploys the app to EKS
+## ⚙️ What This Project Uses
 
-## ✅ Prerequisites
+- **Terraform** — to provision the underlying AWS infrastructure (VPC, EKS Cluster, IAM Roles, etc.)
+- **Ansible** — to configure and deploy the Flask application.
+- **Docker** — to containerise the Flask app.
+- **Prometheus & Grafana** — to monitor the application.
+- **GitHub Actions** — for CI/CD deployment pipeline.
 
-Before you clone and run this, make sure you have:
+---
 
-- AWS account with CLI configured (`aws configure`)
-- IAM user with enough permissions (EKS, ECR, EC2, VPC)
-- `kubectl` installed and configured
-- `terraform` installed
-- `docker` installed and running
-
-## 📂 Project Structure
+## 🗂️ Project Structure
 
 ```
-.
-├── main.tf          # Terraform config for EKS
-├── Dockerfile       # Flask app container spec
-├── deploy.yaml      # Kubernetes Deployment manifest
-├── service.yaml     # Kubernetes Service manifest
-├── app/             # Your Flask app code
-├── README.md
-```
+inventory-pipeline/
+├── terraform-eks/           # Terraform configuration for EKS cluster
+│   ├── main.tf
+│   └── .terraform.lock.hcl
+├── ansible/                 # Ansible playbook and inventory
+│   ├── inventory.ini
+│   └── playbook.yml
+├── inventory_tracker/       # Flask app source code
+├── monitoring/              # Prometheus & Grafana config
+│   ├── docker-compose.yml
+│   └── prometheus.yml
+├── .github/workflows/       # CI/CD pipeline workflows
+│   ├── deploy.yml
+│   └── docker.yml
+├── Dockerfile               # Container definition for Flask app
+├── docker-compose.yml       # Local Docker Compose (if needed)
+├── deployment.yaml          # K8s deployment manifest
+├── service.yaml             # K8s service manifest
+├── requirements.txt         # Python dependencies
+├── .gitignore
+├── .dockerignore
+└── README.md
 
-## 🔧 How to Run It Yourself
+---
 
-### 1️⃣ Clone this repo
+## 🚀 How To Deploy & Test
 
-```bash
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
-```
+### 1️⃣ Provision Infrastructure
 
-### 2️⃣ Provision the EKS Cluster
+1. Install [Terraform](https://developer.hashicorp.com/terraform/install) and configure your AWS credentials.
+2. Initialise and apply:
+   ```bash
+   terraform init
+   terraform apply
+3.	This will provision your EKS cluster, IAM roles, VPC, subnets, and nodes.
 
-```bash
-terraform init
-terraform apply
-```
+### 2️⃣ Configure & Deploy with Ansible
+1.	Install Ansible.
+2.	Update ansible/inventory.ini with your EC2 host or bastion IP details.
+3.	Run the playbook:
+ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
 
-This spins up your VPC, subnets, EKS cluster and node groups. Wait for it to finish — it may take a few minutes.
+###🐳 3️⃣ Build & Push Docker Image
+1.	Build the Docker image locally: docker build -t flask-inventory-app .
+2.	Tag & push the image to your container registry (e.g., AWS ECR):
+docker tag flask-inventory-app <your-aws-account-id>.dkr.ecr.<region>.amazonaws.com/flask-inventory-app:latest
+docker push <your-aws-account-id>.dkr.ecr.<region>.amazonaws.com/flask-inventory-app:latest
 
-### 3️⃣ Build & Push Docker Image to ECR
 
-```bash
-# Authenticate Docker to ECR
-aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.eu-west-2.amazonaws.com
+###⚡ 4️⃣ CI/CD Pipeline
+•	The .github/workflows/ directory includes:
+    •	docker.yml to build and push Docker images.
+    •	deploy.yml to run Ansible playbooks and configure EC2.
+•	Pushing to main will automatically run these workflows.
 
-# Build your image
-docker build -t flask-inventory-app .
+###🖥️ 5️⃣ Monitoring
+•	The monitoring/ folder includes:
+	•	docker-compose.yml for Prometheus and Grafana.
+	•	prometheus.yml to scrape Flask app metrics.
+•	Use docker-compose locally or deploy to your cluster to monitor container metrics.
 
-# Tag it
-docker tag flask-inventory-app:latest <your-account-id>.dkr.ecr.eu-west-2.amazonaws.com/flask-inventory-app:latest
+###✅ Verify
+•	Visit http://<your-eks-lb-endpoint> to confirm the Inventory App is running.
+•	Access Grafana dashboards to visualise app and container metrics.
 
-# Push it
-docker push <your-account-id>.dkr.ecr.eu-west-2.amazonaws.com/flask-inventory-app:latest
-```
 
-### 4️⃣ Deploy to EKS
+###🔒 Notes
+Never commit sensitive files (e.g., .pem keys) to a public repo.
+Update your security groups to allow HTTP/HTTPS traffic to your instances.
+This is an MVP for demonstration; production should secure secrets, keys, and environment variables properly.
 
-```bash
-# Update kubeconfig
-aws eks --region eu-west-2 update-kubeconfig --name your-cluster-name
-
-# Deploy app and service
-kubectl apply -f deploy.yaml
-kubectl apply -f service.yaml
-
-# Check pods
-kubectl get pods
-kubectl get svc
-```
-
-### 5️⃣ Access the App
-
-Look for the `EXTERNAL-IP` of the LoadBalancer:
-
-```bash
-kubectl get svc
-```
-
-Open it in your browser and you should see your Flask app running on EKS!
-
-## 🗑️ Cleanup
-
-To avoid unwanted AWS charges:
-
-```bash
-terraform destroy
-```
-
-## 📝 License
-
-MIT — do what you want with it.
-
-**Happy building!** 🚢✨
+This project shows how you can combine Terraform, Ansible, Docker, and Kubernetes on AWS EKS for a simple, repeatable deployment process.
