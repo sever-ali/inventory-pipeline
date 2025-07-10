@@ -43,6 +43,8 @@ inventory-pipeline/
 ├── .dockerignore
 └── README.md
 
+```
+
 ---
 
 ## 🚀 How To Deploy & Test
@@ -51,44 +53,52 @@ inventory-pipeline/
 
 1. Install [Terraform](https://developer.hashicorp.com/terraform/install) and configure your AWS credentials.
 2. Initialise and apply:
-   ```bash
+   
+   ```
    terraform init
    terraform apply
-3.	This will provision your EKS cluster, IAM roles, VPC, subnets, and nodes.
+   ```
+
+3. This will provision your EKS cluster, IAM roles, VPC, subnets, and nodes.
 
 ### 2️⃣ Configure & Deploy with Ansible
-1.	Install Ansible.
-2.	Update ansible/inventory.ini with your EC2 host or bastion IP details.
-3.	Run the playbook:
-ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+1. Install Ansible.
+2. Update ansible/inventory.ini with your EC2 host or bastion IP details.
+3. Run the playbook:
 
-###🐳 3️⃣ Build & Push Docker Image
-1.	Build the Docker image locally: docker build -t flask-inventory-app .
-2.	Tag & push the image to your container registry (e.g., AWS ECR):
+```
+ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+```
+
+### 🐳 3️⃣ Build & Push Docker Image
+1. Build the Docker image locally: docker build -t flask-inventory-app .
+2. Tag & push the image to your container registry (e.g., AWS ECR):
+
+```
 docker tag flask-inventory-app <your-aws-account-id>.dkr.ecr.<region>.amazonaws.com/flask-inventory-app:latest
 docker push <your-aws-account-id>.dkr.ecr.<region>.amazonaws.com/flask-inventory-app:latest
+```
+
+### ⚡ 4️⃣ CI/CD Pipeline
+- The .github/workflows/ directory includes:
+     - docker.yml to build and push Docker images.
+     - deploy.yml to run Ansible playbooks and configure EC2.
+- Pushing to main will automatically run these workflows.
+
+### 🖥️ 5️⃣ Monitoring
+- The monitoring/ folder includes:
+	- docker-compose.yml for Prometheus and Grafana.
+	- prometheus.yml to scrape Flask app metrics.
+- Use docker-compose locally or deploy to your cluster to monitor container metrics.
+
+### ✅ Verify
+ - Visit http://<your-eks-lb-endpoint> to confirm the Inventory App is running.
+ - Access Grafana dashboards to visualise app and container metrics.
 
 
-###⚡ 4️⃣ CI/CD Pipeline
-•	The .github/workflows/ directory includes:
-    •	docker.yml to build and push Docker images.
-    •	deploy.yml to run Ansible playbooks and configure EC2.
-•	Pushing to main will automatically run these workflows.
-
-###🖥️ 5️⃣ Monitoring
-•	The monitoring/ folder includes:
-	•	docker-compose.yml for Prometheus and Grafana.
-	•	prometheus.yml to scrape Flask app metrics.
-•	Use docker-compose locally or deploy to your cluster to monitor container metrics.
-
-###✅ Verify
-•	Visit http://<your-eks-lb-endpoint> to confirm the Inventory App is running.
-•	Access Grafana dashboards to visualise app and container metrics.
-
-
-###🔒 Notes
-Never commit sensitive files (e.g., .pem keys) to a public repo.
-Update your security groups to allow HTTP/HTTPS traffic to your instances.
-This is an MVP for demonstration; production should secure secrets, keys, and environment variables properly.
+### 🔒 Notes
+ - Never commit sensitive files (e.g., .pem keys) to a public repo.
+ - Update your security groups to allow HTTP/HTTPS traffic to your instances.
+ - This is an MVP for demonstration; production should secure secrets, keys, and environment variables properly.
 
 This project shows how you can combine Terraform, Ansible, Docker, and Kubernetes on AWS EKS for a simple, repeatable deployment process.
