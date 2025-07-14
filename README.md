@@ -97,8 +97,5 @@ docker push <your-aws-account-id>.dkr.ecr.<region>.amazonaws.com/flask-inventory
 
 
 ### 🔒 Notes
- - Never commit sensitive files (e.g., .pem keys) to a public repo.
  - Update your security groups to allow HTTP/HTTPS traffic to your instances.
  - This is an MVP for demonstration; production should secure secrets, keys, and environment variables properly.
-
-This project shows how you can combine Terraform, Ansible, Docker, and Kubernetes on AWS EKS for a simple, repeatable deployment process.
